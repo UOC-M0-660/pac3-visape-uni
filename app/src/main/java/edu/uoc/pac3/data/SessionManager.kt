@@ -1,12 +1,17 @@
 package edu.uoc.pac3.data
 
 import android.content.Context
+import android.preference.PreferenceManager.getDefaultSharedPreferences
 
 /**
  * Created by alex on 06/09/2020.
  */
 
 class SessionManager(context: Context) {
+    private val sharedPref = context.getSharedPreferences("myAppPrefs", Context.MODE_PRIVATE)
+
+    private val ACCESS_TOKEN = "accessToken"
+    private val REFRESH_TOKEN = "refreshToken"
 
     fun isUserAvailable(): Boolean {
         // TODO: Implement
@@ -14,28 +19,39 @@ class SessionManager(context: Context) {
     }
 
     fun getAccessToken(): String? {
-        // TODO: Implement
-        return null
+        return sharedPref.getString(ACCESS_TOKEN, null)
     }
 
     fun saveAccessToken(accessToken: String) {
-        TODO("Save Access Token")
+        with (sharedPref.edit()) {
+            putString(ACCESS_TOKEN, accessToken)
+            commit()
+        }
     }
 
     fun clearAccessToken() {
-        TODO("Clear Access Token")
+        with(sharedPref.edit()) {
+            remove(ACCESS_TOKEN)
+            commit()
+        }
     }
 
     fun getRefreshToken(): String? {
-        TODO("Get Refresh Token")
+        return sharedPref.getString(REFRESH_TOKEN, null)
     }
 
     fun saveRefreshToken(refreshToken: String) {
-        TODO("Save Refresh Token")
+        with(sharedPref.edit()) {
+            putString(REFRESH_TOKEN, refreshToken)
+            commit();
+        }
     }
 
     fun clearRefreshToken() {
-        TODO("Clear Refresh Token")
+        with(sharedPref.edit()) {
+            remove(REFRESH_TOKEN)
+            commit()
+        }
     }
 
 }
