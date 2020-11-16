@@ -8,6 +8,7 @@ package edu.uoc.pac3.data.streams
 data class Stream(
     val userName: String? = null,
     val title: String? = null,
+    val thumbnailUrl: String? = null
 )
 
 data class StreamsResponse(
