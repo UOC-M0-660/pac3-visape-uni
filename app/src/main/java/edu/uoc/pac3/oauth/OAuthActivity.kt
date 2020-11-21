@@ -1,5 +1,6 @@
 package edu.uoc.pac3.oauth
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import edu.uoc.pac3.data.TwitchApiService
 import edu.uoc.pac3.data.network.Endpoints
 import edu.uoc.pac3.data.network.Network
 import edu.uoc.pac3.data.oauth.OAuthConstants
+import edu.uoc.pac3.twitch.streams.StreamsActivity
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.features.json.JsonFeature
@@ -100,7 +102,6 @@ class OAuthActivity : AppCompatActivity() {
         // TODO: Get Tokens from Twitch
 
         // TODO: Save access token and refresh token using the SessionManager class
-
         CoroutineScope(Dispatchers.IO).launch {
 
             TwitchApiService(Network.createHttpClient(applicationContext)).getTokens(authorizationCode).let { tokenResponse ->
@@ -109,6 +110,8 @@ class OAuthActivity : AppCompatActivity() {
                 tokenResponse?.refreshToken?.let { sessionManager.saveRefreshToken(it) }
 
                 Log.d(TAG, sessionManager.getAccessToken())
+                startActivity(Intent(applicationContext, StreamsActivity::class.java))
+                finish()
             }
         }
     }

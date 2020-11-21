@@ -1,12 +1,24 @@
 package edu.uoc.pac3.twitch.streams
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import edu.uoc.pac3.R
+import edu.uoc.pac3.data.SessionManager
+import edu.uoc.pac3.data.TwitchApiService
+import edu.uoc.pac3.data.network.Network
+import edu.uoc.pac3.data.oauth.OAuthConstants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class StreamsActivity : AppCompatActivity() {
 
     private val TAG = "StreamsActivity"
+
+    private lateinit var adapter: StreamsListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,10 +26,24 @@ class StreamsActivity : AppCompatActivity() {
         // Init RecyclerView
         initRecyclerView()
         // TODO: Get Streams
+        CoroutineScope(Dispatchers.Main).launch {
+            TwitchApiService(Network.createHttpClient(applicationContext))
+                    .getStreams(null, SessionManager(applicationContext).getAccessToken()).let {streamsResponse ->
+                        if (streamsResponse != null) {
+                            streamsResponse.data?.let { adapter.setStreams(it) }
+                        }
+            }
+        }
     }
 
     private fun initRecyclerView() {
-        // TODO: Implement
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
+
+        adapter = StreamsListAdapter(emptyList())
+        recyclerView.adapter = adapter
     }
 
 }

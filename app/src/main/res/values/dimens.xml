@@ -15,4 +15,5 @@
     <!-- Custom -->
     <dimen name="stream_item_image_height">144dp</dimen>
     <dimen name="profile_image_size">96dp</dimen>
+    <dimen name="margin_row_content">16dp</dimen>
 </resources>

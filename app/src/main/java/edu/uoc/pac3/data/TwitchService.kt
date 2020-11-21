@@ -43,21 +43,31 @@ class TwitchApiService(private val httpClient: HttpClient) {
 
     /// Gets Streams on Twitch
     @Throws(UnauthorizedException::class)
-    suspend fun getStreams(cursor: String? = null, access_token: String? = null): StreamsResponse? {
+    suspend fun getStreams(cursor: String? = null, accessToken: String? = null): StreamsResponse? {
         //curl -X GET 'https://api.twitch.tv/helix/streams' \
         //-H 'Authorization: Bearer 2gbdx6oar67tqtcmt49t3wpcgycthx' \
         //-H 'Client-Id: wbmytr93xzw8zbg0p1izqyzzc5mbiz'
-        if (access_token != null) {
+        if (accessToken != null) {
             httpClient.use {
-                val response = it.get<StreamsResponse>(Endpoints.streamsUrl) {
-                    parameter("client_id", OAuthConstants.clientId)
-                    parameter("authorization", access_token)
+                //try {
+                    val response = it.get<StreamsResponse>(Endpoints.streamsUrl) {
+                        this.header("Authorization","Bearer ${accessToken}")
+                        this.header("Client-Id", OAuthConstants.clientId)
+                        /*headers {
+                            append("Authorization", "Bearer ${accessToken}")
+                            append("Client_ID", OAuthConstants.clientId)
+                        }*/
+                        Log.d(TAG, "HEADERS: ${accessToken} + Client_id: ${OAuthConstants.clientId}")
+                    }
+                    Log.d(TAG, "StreamsResponse: ${response}")
+                    return response
+                /*} catch (e: Exception) {
+                    Log.e(TAG, "StreamsResponseException: " + e.message)
                 }
-                Log.d(TAG, "StreamsResponse: ${response}")
-                return response
+                return null*/
             }
 
-            TODO("Support Pagination")
+            //TODO("Support Pagination")
         } else {
             throw UnauthorizedException
         }
