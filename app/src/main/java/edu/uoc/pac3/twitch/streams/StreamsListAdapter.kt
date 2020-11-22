@@ -8,16 +8,27 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import edu.uoc.pac3.R
+import edu.uoc.pac3.data.streams.Pagination
 import edu.uoc.pac3.data.streams.Stream
 
-class StreamsListAdapter(private var streams: List<Stream>) : RecyclerView.Adapter<StreamsListAdapter.ViewHolder>() {
+class StreamsListAdapter(private var streams: MutableList<Stream>) : RecyclerView.Adapter<StreamsListAdapter.ViewHolder>() {
+
+    private var pagination: Pagination? = null
+
+    fun setPagination(pagination: Pagination) {
+        this.pagination = pagination
+    }
+
+    fun getPagination(): Pagination? {
+        return this.pagination
+    }
 
     private fun getStream(position: Int): Stream {
         return streams[position]
     }
 
-    fun setStreams(streams: List<Stream>) {
-        this.streams = streams
+    fun addStreams(streams: List<Stream>) {
+        this.streams.addAll(streams)
         notifyDataSetChanged()
     }
 
@@ -35,7 +46,6 @@ class StreamsListAdapter(private var streams: List<Stream>) : RecyclerView.Adapt
         val thumbnailUrl =
             stream.thumbnailUrl?.replace("{width}","1280")
                 ?.replace("{height}","720")
-
         Glide.with(holder.thumbnailView.context)
                 .load(thumbnailUrl)
                 .into(holder.thumbnailView)

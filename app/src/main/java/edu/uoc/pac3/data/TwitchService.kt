@@ -49,25 +49,22 @@ class TwitchApiService(private val httpClient: HttpClient) {
         //-H 'Client-Id: wbmytr93xzw8zbg0p1izqyzzc5mbiz'
         if (accessToken != null) {
             httpClient.use {
-                //try {
+                try {
                     val response = it.get<StreamsResponse>(Endpoints.streamsUrl) {
                         this.header("Authorization","Bearer ${accessToken}")
                         this.header("Client-Id", OAuthConstants.clientId)
-                        /*headers {
-                            append("Authorization", "Bearer ${accessToken}")
-                            append("Client_ID", OAuthConstants.clientId)
-                        }*/
+                        if (cursor != null) {
+                            parameter("after", cursor)
+                        }
                         Log.d(TAG, "HEADERS: ${accessToken} + Client_id: ${OAuthConstants.clientId}")
                     }
                     Log.d(TAG, "StreamsResponse: ${response}")
                     return response
-                /*} catch (e: Exception) {
-                    Log.e(TAG, "StreamsResponseException: " + e.message)
+                } catch (e: Exception) {
+                    Log.e(TAG,  e.message)
                 }
-                return null*/
+                return null
             }
-
-            //TODO("Support Pagination")
         } else {
             throw UnauthorizedException
         }
