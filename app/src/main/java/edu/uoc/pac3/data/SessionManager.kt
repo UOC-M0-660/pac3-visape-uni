@@ -2,6 +2,7 @@ package edu.uoc.pac3.data
 
 import android.content.Context
 import android.preference.PreferenceManager.getDefaultSharedPreferences
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by alex on 06/09/2020.
@@ -14,8 +15,7 @@ class SessionManager(context: Context) {
     private val REFRESH_TOKEN = "refreshToken"
 
     fun isUserAvailable(): Boolean {
-        // TODO: Implement
-        return false
+        return sharedPref.getString(ACCESS_TOKEN, null) != null
     }
 
     fun getAccessToken(): String? {

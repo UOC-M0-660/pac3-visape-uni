@@ -12,7 +12,6 @@ import edu.uoc.pac3.R
 import edu.uoc.pac3.data.SessionManager
 import edu.uoc.pac3.data.TwitchApiService
 import edu.uoc.pac3.data.network.Network
-import edu.uoc.pac3.data.oauth.OAuthConstants
 import edu.uoc.pac3.twitch.profile.ProfileActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -43,6 +43,18 @@ class TwitchApiService(private val httpClient: HttpClient) {
         }
     }
 
+    suspend fun refreshToken(refreshToken: String? = null) : OAuthTokensResponse? {
+        httpClient.use {
+            val response = it.post<OAuthTokensResponse>(Endpoints.baseTokenUrl) {
+                parameter("client_id", OAuthConstants.clientId)
+                parameter("client_secret", OAuthConstants.secretId)
+                parameter("refresh_token", refreshToken)
+                parameter("grant_type", "refresh_token")
+            }
+            return response
+        }
+    }
+
     /// Gets Streams on Twitch
     @Throws(UnauthorizedException::class)
     suspend fun getStreams(cursor: String? = null, accessToken: String? = null): StreamsResponse? {

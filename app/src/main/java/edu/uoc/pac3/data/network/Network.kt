@@ -36,6 +36,9 @@ object Network {
                 }
                 level = LogLevel.ALL
             }
+            engine {
+                addInterceptor(TwitchInterceptor())
+            }
         }
     }
 }

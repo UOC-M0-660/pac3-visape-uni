@@ -16,11 +16,6 @@ import edu.uoc.pac3.data.network.Endpoints
 import edu.uoc.pac3.data.network.Network
 import edu.uoc.pac3.data.oauth.OAuthConstants
 import edu.uoc.pac3.twitch.streams.StreamsActivity
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.request.post
 import kotlinx.android.synthetic.main.activity_oauth.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
