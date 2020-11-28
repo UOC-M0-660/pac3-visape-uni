@@ -1,6 +1,7 @@
 package edu.uoc.pac3.data.network
 
 import android.content.Context
+import android.util.Log
 import io.ktor.client.*
 import io.ktor.client.engine.*
 import io.ktor.client.engine.okhttp.*
@@ -26,6 +27,14 @@ object Network {
             // TODO: Setup HttpClient
             install(JsonFeature) {
                 serializer = KotlinxSerializer(json)
+            }
+            install(Logging) {
+                logger = object: Logger {
+                    override fun log(message: String) {
+                        Log.v("Ktor", message)
+                    }
+                }
+                level = LogLevel.ALL
             }
         }
     }

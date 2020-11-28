@@ -24,4 +24,5 @@
     <string name="error_profile_update">Error updating profile</string>
     <string name="title_example">Title example</string>
     <string name="author_example">Author example</string>
+    <string name="profile">Profile</string>
 </resources>

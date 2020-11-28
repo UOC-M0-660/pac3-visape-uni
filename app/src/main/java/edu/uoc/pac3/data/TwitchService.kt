@@ -8,6 +8,7 @@ import edu.uoc.pac3.data.oauth.OAuthTokensResponse
 import edu.uoc.pac3.data.oauth.UnauthorizedException
 import edu.uoc.pac3.data.streams.StreamsResponse
 import edu.uoc.pac3.data.user.User
+import edu.uoc.pac3.data.user.UserResponse
 import io.ktor.client.*
 import io.ktor.client.request.*
 import kotlin.jvm.Throws
@@ -35,6 +36,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
                 parameter("code", authorizationCode)
                 parameter("grant_type", "authorization_code")
                 parameter("redirect_uri", Endpoints.redirectUri)
+                parameter("scope", OAuthConstants.scope)
             }
             Log.d(TAG, "Access Token: ${response.accessToken}. Refresh Token: ${response.refreshToken}")
             return response
@@ -72,13 +74,57 @@ class TwitchApiService(private val httpClient: HttpClient) {
 
     /// Gets Current Authorized User on Twitch
     @Throws(UnauthorizedException::class)
-    suspend fun getUser(): User? {
-        TODO("Get User from Twitch")
+    suspend fun getUser(accessToken: String? = null): UserResponse? {
+        //curl -H 'Accept: application/vnd.twitchtv.v5+json' \
+        //-H 'Client-ID: uo6dggojyb8d6soh92zknwmi5ej1q2' \
+        //-H 'Authorization: OAuth cfabdegwdoklmawdzdo98xt2fo512y' \
+        //-X GET 'https://api.twitch.tv/kraken/user'
+        if (accessToken != null) {
+            httpClient.use {
+                try {
+                    val response = it.get<UserResponse>(Endpoints.userUrl) {
+                        this.header("Authorization","Bearer ${accessToken}")
+                        this.header("Client-Id", OAuthConstants.clientId)
+                        Log.d(TAG, "HEADERS: ${accessToken} + Client_id: ${OAuthConstants.clientId}")
+                    }
+
+                    Log.d(TAG, "StreamsResponse: ${response}")
+                    return response
+                } catch (e: Exception) {
+                    Log.e(TAG,  e.message)
+                }
+                return null
+            }
+        } else {
+            throw UnauthorizedException
+        }
     }
 
     /// Gets Current Authorized User on Twitch
     @Throws(UnauthorizedException::class)
-    suspend fun updateUserDescription(description: String): User? {
-        TODO("Update User Description on Twitch")
+    suspend fun updateUserDescription(description: String, accessToken: String? = null): UserResponse? {
+        //curl  -X PUT 'https://api.twitch.tv/helix/users?description=BaldAngel' \
+        //-H 'Authorization: Bearer cfabdegwdoklmawdzdo98xt2fo512y' \
+        //-H 'Client-Id: uo6dggojyb8d6soh92zknwmi5ej1q2'
+        if (accessToken != null) {
+            httpClient.use {
+                try {
+                    val response = it.put<UserResponse>(Endpoints.userUrl) {
+                        this.header("Authorization","Bearer ${accessToken}")
+                        this.header("Client-Id", OAuthConstants.clientId)
+                        parameter("description", description)
+                        Log.d(TAG, "HEADERS: ${accessToken} + Client_id: ${OAuthConstants.clientId}")
+                    }
+
+                    Log.d(TAG, "StreamsResponse: ${response}")
+                    return response
+                } catch (e: Exception) {
+                    Log.e(TAG,  e.message)
+                }
+                return null
+            }
+        } else {
+            throw UnauthorizedException
+        }
     }
 }
