@@ -14,7 +14,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import kotlin.coroutines.coroutineContext
 
-class TwitchInterceptor: Interceptor {
+class TwitchInterceptor : Interceptor {
     private val TAG = "TwitchInterceptor"
     public override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()

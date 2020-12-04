@@ -43,7 +43,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
         }
     }
 
-    suspend fun refreshToken(refreshToken: String? = null) : OAuthTokensResponse? {
+    suspend fun refreshToken(refreshToken: String? = null): OAuthTokensResponse? {
         httpClient.use {
             val response = it.post<OAuthTokensResponse>(Endpoints.baseTokenUrl) {
                 parameter("client_id", OAuthConstants.clientId)
@@ -65,7 +65,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
             httpClient.use {
                 try {
                     val response = it.get<StreamsResponse>(Endpoints.streamsUrl) {
-                        this.header("Authorization","Bearer ${accessToken}")
+                        this.header("Authorization", "Bearer ${accessToken}")
                         this.header("Client-Id", OAuthConstants.clientId)
                         if (cursor != null) {
                             parameter("after", cursor)
@@ -74,8 +74,10 @@ class TwitchApiService(private val httpClient: HttpClient) {
                     }
                     Log.d(TAG, "StreamsResponse: ${response}")
                     return response
+                } catch (e: UnauthorizedException) {
+                    Log.e(TAG, e.message)
                 } catch (e: Exception) {
-                    Log.e(TAG,  e.message)
+                    Log.e(TAG, e.message)
                 }
                 return null
             }
@@ -95,15 +97,17 @@ class TwitchApiService(private val httpClient: HttpClient) {
             httpClient.use {
                 try {
                     val response = it.get<UserResponse>(Endpoints.userUrl) {
-                        this.header("Authorization","Bearer ${accessToken}")
+                        this.header("Authorization", "Bearer ${accessToken}")
                         this.header("Client-Id", OAuthConstants.clientId)
                         Log.d(TAG, "HEADERS: ${accessToken} + Client_id: ${OAuthConstants.clientId}")
                     }
 
                     Log.d(TAG, "StreamsResponse: ${response}")
                     return response
+                } catch (e: UnauthorizedException) {
+                    Log.e(TAG, e.message)
                 } catch (e: Exception) {
-                    Log.e(TAG,  e.message)
+                    Log.e(TAG, e.message)
                 }
                 return null
             }
@@ -122,7 +126,7 @@ class TwitchApiService(private val httpClient: HttpClient) {
             httpClient.use {
                 try {
                     val response = it.put<UserResponse>(Endpoints.userUrl) {
-                        this.header("Authorization","Bearer ${accessToken}")
+                        this.header("Authorization", "Bearer ${accessToken}")
                         this.header("Client-Id", OAuthConstants.clientId)
                         parameter("description", description)
                         Log.d(TAG, "HEADERS: ${accessToken} + Client_id: ${OAuthConstants.clientId}")
@@ -130,8 +134,10 @@ class TwitchApiService(private val httpClient: HttpClient) {
 
                     Log.d(TAG, "StreamsResponse: ${response}")
                     return response
+                } catch (e: UnauthorizedException) {
+                    Log.e(TAG, e.message)
                 } catch (e: Exception) {
-                    Log.e(TAG,  e.message)
+                    Log.e(TAG, e.message)
                 }
                 return null
             }

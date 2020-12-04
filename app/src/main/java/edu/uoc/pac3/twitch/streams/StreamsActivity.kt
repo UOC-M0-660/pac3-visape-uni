@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import edu.uoc.pac3.R
@@ -30,14 +31,14 @@ class StreamsActivity : AppCompatActivity() {
         // Init RecyclerView
         initRecyclerView()
         // TODO: Get Streams
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             TwitchApiService(Network.createHttpClient(applicationContext))
                     .getStreams(adapter.getPagination()?.cursor, SessionManager(applicationContext).getAccessToken()).let { streamsResponse ->
                         if (streamsResponse != null) {
                             streamsResponse.data?.let { adapter.addStreams(it) }
                             streamsResponse.pagination?.let { adapter.setPagination(it) }
                         }
-            }
+                    }
         }
     }
 
@@ -73,19 +74,19 @@ class StreamsActivity : AppCompatActivity() {
                     val visibleItemCount = layoutManager.childCount
                     val totalItemCount = layoutManager.itemCount
                     val pastVisibleItems = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                    if(!loading && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                    if (!loading && (visibleItemCount + pastVisibleItems) >= totalItemCount) {
                         Log.d(TAG, "More Streams")
                         loading = true
-                        CoroutineScope(Dispatchers.Main).launch {
+                        lifecycleScope.launch {
                             TwitchApiService(Network.createHttpClient(applicationContext))
-                                .getStreams(adapter.getPagination()?.cursor, SessionManager(applicationContext).getAccessToken()).let { streamsResponse ->
-                                    if (streamsResponse != null) {
-                                        Log.d(TAG, "STREAMS CARGADOS")
-                                        streamsResponse.data?.let { adapter.addStreams(it) }
-                                        streamsResponse.pagination?.let { adapter.setPagination(it) }
-                                        loading = false
+                                    .getStreams(adapter.getPagination()?.cursor, SessionManager(applicationContext).getAccessToken()).let { streamsResponse ->
+                                        if (streamsResponse != null) {
+                                            Log.d(TAG, "STREAMS CARGADOS")
+                                            streamsResponse.data?.let { adapter.addStreams(it) }
+                                            streamsResponse.pagination?.let { adapter.setPagination(it) }
+                                            loading = false
+                                        }
                                     }
-                                }
                         }
                     }
                 }

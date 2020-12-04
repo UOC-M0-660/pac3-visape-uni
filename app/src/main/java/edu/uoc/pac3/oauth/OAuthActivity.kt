@@ -9,6 +9,8 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.lifecycleScope
 import edu.uoc.pac3.R
 import edu.uoc.pac3.data.SessionManager
 import edu.uoc.pac3.data.TwitchApiService
@@ -97,8 +99,7 @@ class OAuthActivity : AppCompatActivity() {
         // TODO: Get Tokens from Twitch
 
         // TODO: Save access token and refresh token using the SessionManager class
-        CoroutineScope(Dispatchers.IO).launch {
-
+        lifecycleScope.launch {
             TwitchApiService(Network.createHttpClient(applicationContext)).getTokens(authorizationCode).let { tokenResponse ->
                 val sessionManager = SessionManager(applicationContext)
                 tokenResponse?.accessToken?.let { sessionManager.saveAccessToken(it) }

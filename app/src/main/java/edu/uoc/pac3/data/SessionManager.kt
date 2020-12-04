@@ -23,7 +23,7 @@ class SessionManager(context: Context) {
     }
 
     fun saveAccessToken(accessToken: String) {
-        with (sharedPref.edit()) {
+        with(sharedPref.edit()) {
             putString(ACCESS_TOKEN, accessToken)
             commit()
         }

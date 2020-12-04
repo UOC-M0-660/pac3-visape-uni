@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import edu.uoc.pac3.LaunchActivity
 import edu.uoc.pac3.R
@@ -25,7 +26,7 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             TwitchApiService(Network.createHttpClient(applicationContext))
                     .getUser(SessionManager(applicationContext).getAccessToken()).let { userResponse ->
                         cargarInfoUser(userResponse)
@@ -33,9 +34,9 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         updateDescriptionButton.setOnClickListener(View.OnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
+            lifecycleScope.launch {
                 TwitchApiService(Network.createHttpClient(applicationContext))
-                        .updateUserDescription(userDescriptionEditText.text.toString(), SessionManager(applicationContext).getAccessToken()).let {userResponse ->
+                        .updateUserDescription(userDescriptionEditText.text.toString(), SessionManager(applicationContext).getAccessToken()).let { userResponse ->
                             cargarInfoUser(userResponse)
                             Toast.makeText(applicationContext, "Description have been successfully updated", Toast.LENGTH_LONG).show()
                         }
@@ -58,9 +59,11 @@ class ProfileActivity : AppCompatActivity() {
         if (userResponse != null && userResponse.data != null && userResponse.data.size > 0) {
             userResponse.data.get(0).userName?.let { userNameTextView.text = it }
             userResponse.data.get(0).description?.let { userDescriptionEditText.setText(it) }
-            userResponse.data.get(0).imageUrl?.let { Glide.with(applicationContext)
-                    .load(it)
-                    .into(imageView) }
+            userResponse.data.get(0).imageUrl?.let {
+                Glide.with(applicationContext)
+                        .load(it)
+                        .into(imageView)
+            }
             userResponse.data.get(0).viewCount?.let {
                 viewsText.text = it.toString()
             }

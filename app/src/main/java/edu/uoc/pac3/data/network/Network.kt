@@ -29,7 +29,7 @@ object Network {
                 serializer = KotlinxSerializer(json)
             }
             install(Logging) {
-                logger = object: Logger {
+                logger = object : Logger {
                     override fun log(message: String) {
                         Log.v("Ktor", message)
                     }

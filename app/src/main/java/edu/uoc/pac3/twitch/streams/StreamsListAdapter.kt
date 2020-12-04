@@ -44,8 +44,8 @@ class StreamsListAdapter(private var streams: MutableList<Stream>) : RecyclerVie
         holder.userNameView.text = stream.userName
 
         val thumbnailUrl =
-            stream.thumbnailUrl?.replace("{width}","1280")
-                ?.replace("{height}","720")
+                stream.thumbnailUrl?.replace("{width}", "1280")
+                        ?.replace("{height}", "720")
         Glide.with(holder.thumbnailView.context)
                 .load(thumbnailUrl)
                 .into(holder.thumbnailView)
